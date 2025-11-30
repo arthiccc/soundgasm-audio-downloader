@@ -7,7 +7,7 @@ No fluff, just grab and go.
 
 ## ⚡ How to use
 1. Install Tampermonkey or Violentmonkey  
-2. Paste the script  
+2. [Scriptlink here](https://greasyfork.org/en/scripts/557377-soundgasm-audio-downloader-with-filename)
 3. Open any soundgasm track → hit **Download**  
 
 ## 🛠 Tech
