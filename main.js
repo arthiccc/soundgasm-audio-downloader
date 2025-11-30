@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Soundgasm Audio Downloader
+// @name         Soundgasm Audio Downloader with Filename
 // @namespace    http://tampermonkey.net/
-// @version      1.0
-// @description  Adds a download button for audio files on soundgasm.net by parsing the page source.
+// @version      1.1
+// @description  Adds a download button for audio files on soundgasm.net with custom filename based on title and author.
 // @author       Copilot
 // @match        https://soundgasm.net/*
 // @grant        none
@@ -11,19 +11,23 @@
 (function() {
     'use strict';
 
-    // Get full page source
     const pageSource = document.documentElement.innerHTML;
 
     // Regex to find audio URL
     const audioRegex = /(https:\/\/media\.soundgasm\.net\/sounds\/[a-zA-Z0-9]+\.m4a)/;
     const m4aRegex = /m4a:\s*["'](https:\/\/media\.soundgasm\.net\/sounds\/[a-zA-Z0-9]+\.m4a)["']/;
-
-    // Try both patterns
     const match = pageSource.match(audioRegex) || pageSource.match(m4aRegex);
     const audioUrl = match ? match[1] : null;
 
+    // Regex to extract title and author
+    const titleMatch = pageSource.match(/<div class="jp-title"[^>]*>(.*?)<\/div>/);
+    const authorMatch = pageSource.match(/<a href="https:\/\/soundgasm\.net\/u\/([^"]+)">/);
+
+    const title = titleMatch ? titleMatch[1].trim().replace(/[\\/:*?"<>|]/g, '') : 'audio';
+    const author = authorMatch ? authorMatch[1].trim().replace(/[\\/:*?"<>|]/g, '') : 'unknown';
+    const filename = `${title} - ${author}.m4a`;
+
     if (audioUrl) {
-        // Create download button
         const button = document.createElement('a');
         button.href = audioUrl;
         button.textContent = '⬇ Download Audio';
@@ -37,7 +41,7 @@
         button.style.borderRadius = '5px';
         button.style.textDecoration = 'none';
         button.style.zIndex = '9999';
-        button.setAttribute('download', '');
+        button.setAttribute('download', filename);
 
         document.body.appendChild(button);
     }
